@@ -118,7 +118,7 @@ const getSalesGrowthRateOverTime = async (req, res) => {
         console.error("getSalesGrowthRateOverTime - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch sales growth data");
     }
-}; //complated
+}; //completed
 
 
 const getNewCustomersOverTime = async (req, res) => {
@@ -161,7 +161,7 @@ const getNewCustomersOverTime = async (req, res) => {
         console.error("getNewCustomersOverTime - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch new customers data");
     }
-};//complated
+};//completed
 
 
 const getRepeatCustomers = async (req, res) => {
@@ -196,7 +196,7 @@ const getRepeatCustomers = async (req, res) => {
         console.error("getRepeatCustomers - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch repeat customers data");
     }
-}; //complated
+}; //completed
 
 
 const getGeographicalDistribution = async (req, res) => {
@@ -215,7 +215,7 @@ const getGeographicalDistribution = async (req, res) => {
         console.error("getGeographicalDistribution - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch geographical distribution data");
     }
-}; //complated
+}; //completed
 
 const getCustomerLifetimeValueByCohorts = async (req, res) => {
     try {
@@ -255,7 +255,7 @@ const getCustomerLifetimeValueByCohorts = async (req, res) => {
         return APIResponse.errorResponse(res, "Failed to fetch customer lifetime value data");
     }
 };
- //complated
+ //completed
 
 
 module.exports = {
