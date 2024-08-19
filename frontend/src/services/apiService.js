@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:4001'; 
+const API_BASE_URL = 'https://shopify-analytics.vercel.app'; 
 
 export const getTotalSalesOverTime = async (interval) => {
     try {
