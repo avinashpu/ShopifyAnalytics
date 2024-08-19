@@ -13,35 +13,51 @@ const SalesGrowthRateChart = ({ interval }) => {
             try {
                 const response = await getSalesGrowthRateOverTime(interval);
 
-                // Check if the response structure is valid
-                if (response && response.data && Array.isArray(response.data.data)) {
-                    const data = response.data.data;
+                console.log('API Response:', response);
 
-                    if (data.length > 0) {
-                        const labels = data.map(item => item.period || 'Unknown');
-                        const growthRates = data.map(item => parseFloat(item.growthRate) || 0); // Handle NaN
+                if (response && response.data) {
+                    const data = response?.data;
 
-                        setChartData({
-                            labels: labels,
-                            datasets: [
-                                {
-                                    label: 'Sales Growth Rate (%)',
-                                    data: growthRates,
-                                    borderColor: 'rgba(153, 102, 255, 1)',
-                                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                                    borderWidth: 2, // Added borderWidth for better visibility
+                    if (Array.isArray(data)) {
+                        if (data.length > 0) {
+                            const labels = data.map(item => item.period || 'Unknown');
+                            const growthRates = data.map(item => {
+                                const rate = parseFloat(item.growthRate);
+                                if (isNaN(rate)) {
+                                    console.error(`Invalid growthRate value: ${item.growthRate}`);
+                                    return 0;
                                 }
-                            ]
-                        });
+                                return rate;
+                            });
+
+                            setChartData({
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Sales Growth Rate (%)',
+                                        data: growthRates,
+                                        borderColor: 'rgba(153, 102, 255, 1)',
+                                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                        borderWidth: 2, 
+                                    }
+                                ]
+                            });
+                        } else {
+                            console.warn("Data array is empty:", data);
+                            setChartData({
+                                labels: [],
+                                datasets: []
+                            });
+                        }
                     } else {
-                        console.error("Data array is empty:", data);
+                        console.error("response.data.data is not an array or is undefined:", response.data.data);
                         setChartData({
                             labels: [],
                             datasets: []
                         });
                     }
                 } else {
-                    console.error("Unexpected response structure or undefined data:", response);
+                    console.error("Unexpected response structure:", response);
                     setChartData({
                         labels: [],
                         datasets: []
@@ -59,7 +75,33 @@ const SalesGrowthRateChart = ({ interval }) => {
         fetchData();
     }, [interval]);
 
-    return <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />;
+    return (
+        <div style={{ position: 'relative', height: '400px', width: '600px' }}>
+            <Line
+                data={chartData}
+                options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sales Growth Rate (%)'
+                            }
+                        }
+                    }
+                }}
+            />
+        </div>
+    );
 };
 
 export default SalesGrowthRateChart;

@@ -13,28 +13,47 @@ const SalesOverTimeChart = ({ interval }) => {
             try {
                 const response = await getTotalSalesOverTime(interval);
 
-                // Check if response structure is valid
-                if (response && response.data && Array.isArray(response.data.data)) {
-                    const data = response.data.data;
+                console.log('API Response:', response);
 
-                    if (data.length > 0) {
-                        const labels = data.map(item => item._id || 'Unknown');
-                        const sales = data.map(item => parseFloat(item.totalSales) || 0); // Handle NaN
+                if (response && response.data) {
+                    console.log('Response Data:', response.data);
 
-                        setChartData({
-                            labels: labels,
-                            datasets: [
-                                {
-                                    label: 'Total Sales',
-                                    data: sales,
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderWidth: 2, // Added borderWidth for better visibility
+                    const data = response?.data;
+                    
+                    if (Array.isArray(data)) {
+                     
+                        if (data.length > 0) {
+                            const labels = data.map(item => item._id || 'Unknown');
+                            const sales = data.map(item => {
+                                const sale = parseFloat(item.totalSales);
+                                if (isNaN(sale)) {
+                                    console.error(`Invalid totalSales value: ${item.totalSales}`);
+                                    return 0;
                                 }
-                            ]
-                        });
+                                return sale;
+                            });
+
+                            setChartData({
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Total Sales',
+                                        data: sales,
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                        borderWidth: 2,
+                                    }
+                                ]
+                            });
+                        } else {
+                            console.warn("Data array is empty:", data);
+                            setChartData({
+                                labels: [],
+                                datasets: []
+                            });
+                        }
                     } else {
-                        console.error("Data array is empty:", data);
+                        console.error("response.data.data is not an array or is undefined:", data);
                         setChartData({
                             labels: [],
                             datasets: []
@@ -59,7 +78,33 @@ const SalesOverTimeChart = ({ interval }) => {
         fetchData();
     }, [interval]);
 
-    return <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />;
+    return (
+        <div style={{ position: 'relative', height: '400px', width: '600px' }}>
+            <Line
+                data={chartData}
+                options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Sales'
+                            }
+                        }
+                    }
+                }}
+            />
+        </div>
+    );
 };
 
 export default SalesOverTimeChart;

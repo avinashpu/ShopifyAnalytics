@@ -13,13 +13,14 @@ const NewCustomersChart = ({ interval }) => {
             try {
                 const response = await getNewCustomersOverTime(interval);
 
-                // Check if the response and data are in the expected format
-                if (response && response.data && Array.isArray(response.data.data)) {
-                    const data = response.data.data;
+                console.log('API Response:', response);
+
+                if (response && response.data && Array.isArray(response?.data)) {
+                    const data = response?.data;
 
                     if (data.length > 0) {
                         const labels = data.map(item => item._id || 'Unknown');
-                        const newCustomers = data.map(item => parseInt(item.newCustomers) || 0);
+                        const newCustomers = data.map(item => parseInt(item.newCustomers, 10) || 0);
 
                         setChartData({
                             labels: labels,
@@ -34,20 +35,58 @@ const NewCustomersChart = ({ interval }) => {
                             ]
                         });
                     } else {
-                        console.error("Data array is empty:", data);
+                        console.warn("Data array is empty:", data);
+                        setChartData({
+                            labels: [],
+                            datasets: []
+                        });
                     }
                 } else {
-                    console.error("Expected an array but got:", response ? response.data : undefined);
+                    console.error("Unexpected response structure. Expected data.data to be an array:", response);
+                    setChartData({
+                        labels: [],
+                        datasets: []
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching new customers data:", error);
+                setChartData({
+                    labels: [],
+                    datasets: []
+                });
             }
         };
 
         fetchData();
     }, [interval]);
 
-    return <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />;
+    return (
+        <div style={{ position: 'relative', height: '400px', width: '600px' }}>
+            <Line
+                data={chartData}
+                options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'New Customers'
+                            }
+                        }
+                    }
+                }}
+            />
+        </div>
+    );
 };
 
 export default NewCustomersChart;

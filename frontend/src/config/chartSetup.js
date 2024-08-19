@@ -1,4 +1,4 @@
-// src/config/chartSetup.js
+
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,7 +12,6 @@ import {
     ArcElement,
 } from 'chart.js';
 
-// Register the required components
 ChartJS.register(
     CategoryScale,
     LinearScale,

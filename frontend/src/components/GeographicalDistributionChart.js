@@ -13,9 +13,8 @@ const GeographicalDistributionChart = () => {
             try {
                 const response = await getGeographicalDistribution();
 
-                // Ensure data is defined and is an array
-                if (response && response.data && Array.isArray(response.data.data)) {
-                    const data = response.data.data;
+                if (response && response.data && Array.isArray(response?.data)) {
+                    const data = response?.data;
 
                     const labels = data.map(item => item._id);
                     const counts = data.map(item => item.count);

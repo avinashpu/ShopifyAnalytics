@@ -20,16 +20,14 @@ const CustomerLifetimeValueChart = () => {
         const fetchData = async () => {
             try {
                 const response = await getCustomerLifetimeValueByCohorts();
-                const data = response.data.data;
+                const data = response?.data;
 
-                // Log the full response and data for debugging
                 console.log("Full response:", response);
                 console.log("Data:", data);
 
-                // Ensure data is an array
                 if (Array.isArray(data)) {
                     const labels = data.map(item => item._id);
-                    const values = data.map(item => parseFloat(item.totalValue) || 0); // Handle NaN or missing values
+                    const values = data.map(item => parseFloat(item.totalValue) || 0); 
 
                     setChartData({
                         labels: labels,
