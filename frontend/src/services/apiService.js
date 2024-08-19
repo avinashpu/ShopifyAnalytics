@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://localhost:4001';
 
 export const getTotalSalesOverTime = async (interval) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/total-sales-over-time`, { params: { interval } });
+        const response = await axios.get(`${API_BASE_URL}/api/shopify/totalsales`, { params: { interval } });
         return response.data;
     } catch (error) {
         console.error("Error fetching total sales over time", error);
@@ -14,7 +14,7 @@ export const getTotalSalesOverTime = async (interval) => {
 
 export const getSalesGrowthRateOverTime = async (interval) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/shopify/totalsales`, { params: { interval } });
+        const response = await axios.get(`${API_BASE_URL}/api/shopify/salesgrowth`, { params: { interval } });
         return response.data;
     } catch (error) {
         console.error("Error fetching sales growth rate over time", error);
