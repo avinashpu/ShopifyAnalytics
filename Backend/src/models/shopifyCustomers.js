@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const shopifyCustomerSchema = new mongoose.Schema({
-    _id: { type: String },
-    addresses: Array,
+    addresses: [Object],
     admin_graphql_api_id: String,
     created_at: Date,
     currency: String,
@@ -21,7 +20,7 @@ const shopifyCustomerSchema = new mongoose.Schema({
     state: String,
     tags: String,
     tax_exempt: Boolean,
-    tax_exemptions: Array,
+    tax_exemptions: [String],
     total_spent: String,
     updated_at: Date,
     verified_email: Boolean,

@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 
 const shopifyProductSchema = new mongoose.Schema({
-    _id: { type: String },
     admin_graphql_api_id: String,
     body_html: String,
     created_at: Date,
     handle: String,
-    id: String,
     image: String,
-    images: Array,
-    options: Array,
+    images: [Object],
+    options: [Object],
     product_type: String,
     published_at: Date,
     published_scope: String,
@@ -18,7 +16,7 @@ const shopifyProductSchema = new mongoose.Schema({
     template_suffix: String,
     title: String,
     updated_at: Date,
-    variants: Array,
+    variants: [Object],
     vendor: String,
 });
 
