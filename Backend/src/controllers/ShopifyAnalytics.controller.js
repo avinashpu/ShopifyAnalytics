@@ -51,14 +51,18 @@ const getSalesGrowthRateOverTime = async (req, res) => {
         console.log("getSalesGrowthRateOverTime - Request Query:", req.query);
 
         const { interval } = req.query;
+        const trimmedInterval = (interval || '').trim(); 
+
         const groupByInterval = {
             daily: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
             monthly: { $dateToString: { format: "%Y-%m", date: "$created_at" } },
             quarterly: { $dateToString: { format: "%Y-Q", date: "$created_at" } },
             yearly: { $dateToString: { format: "%Y", date: "$created_at" } },
-        }[interval || 'monthly'];
+        }[trimmedInterval || 'monthly'];
 
-        
+        if (!groupByInterval) {
+            return APIResponse.errorResponse(res, "Invalid interval parameter");
+        }
 
         console.log("getSalesGrowthRateOverTime - Group By Interval:", groupByInterval);
 
@@ -113,10 +117,8 @@ const getSalesGrowthRateOverTime = async (req, res) => {
         console.error("getSalesGrowthRateOverTime - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch sales growth data");
     }
-};
+}; //complated
 
-
-//err
 
 const getNewCustomersOverTime = async (req, res) => {
     try {
@@ -161,26 +163,40 @@ const getNewCustomersOverTime = async (req, res) => {
 };//complated
 
 
-
-
 const getRepeatCustomers = async (req, res) => {
     try {
         console.log("getRepeatCustomers - Starting...");
 
         const repeatCustomersData = await ShopifyOrder.aggregate([
-            { $group: { _id: "$customer.id", orderCount: { $sum: 1 } } },
-            { $match: { orderCount: { $gt: 1 } } },
-            { $count: "repeatCustomers" }
+            { 
+                $group: {
+                    _id: "$customer.id",    
+                    orderCount: { $sum: 1 }
+                }
+            },
+            { 
+                $match: { orderCount: { $gt: 1 } } 
+            },
+            { 
+                $count: "repeatCustomers" 
+            }
         ]);
 
         console.log("getRepeatCustomers - Repeat Customers Data:", repeatCustomersData);
 
-        return APIResponse.successResponse(res, "Repeat Customers Count", repeatCustomersData);
+        if (repeatCustomersData.length === 0) {
+            return APIResponse.successResponse(res, "No repeat customers found", { repeatCustomers: 0 });
+        }
+
+        const count = repeatCustomersData[0].repeatCustomers;
+
+        return APIResponse.successResponse(res, "Repeat Customers Count", { repeatCustomers: count });
     } catch (error) {
         console.error("getRepeatCustomers - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch repeat customers data");
     }
 }; //complated
+
 
 const getGeographicalDistribution = async (req, res) => {
     try {
@@ -238,9 +254,8 @@ const getCustomerLifetimeValueByCohorts = async (req, res) => {
         return APIResponse.errorResponse(res, "Failed to fetch customer lifetime value data");
     }
 };
+ //complated
 
-
- //err
 
 module.exports = {
     getTotalSalesOverTime,
