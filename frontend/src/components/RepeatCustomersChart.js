@@ -9,9 +9,18 @@ const RepeatCustomersChart = () => {
         const fetchData = async () => {
             try {
                 const response = await getRepeatCustomers();
-                setCount(response.data.data.repeatCustomers);
+
+                // Check if response and data are defined and in the expected format
+                if (response && response.data && response.data.data) {
+                    const repeatCustomersCount = parseInt(response.data.data.repeatCustomers) || 0;
+                    setCount(repeatCustomersCount);
+                } else {
+                    console.error("Unexpected data format:", response ? response.data : undefined);
+                    setCount(0); // Default to 0 if data is not as expected
+                }
             } catch (error) {
                 console.error("Error fetching repeat customers data:", error);
+                setCount(0); // Default to 0 on error
             }
         };
 
