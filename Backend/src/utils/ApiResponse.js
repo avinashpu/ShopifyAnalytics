@@ -1,4 +1,3 @@
-const { Response } = require('express');
 
 class APIResponse {
     successResponse(res, msg = "Success", data) {

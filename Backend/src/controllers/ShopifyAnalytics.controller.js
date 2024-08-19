@@ -6,7 +6,7 @@ const APIResponse = require('../utils/ApiResponse');
 
 const getTotalSalesOverTime = async (req, res) => {
     try {
-        console.log("getTotalSalesOverTime - Request Query:", req.query);
+      //  console.log("getTotalSalesOverTime - Request Query:", req.query);
 
         const { interval } = req.query;
         const groupByInterval = {
@@ -20,10 +20,10 @@ const getTotalSalesOverTime = async (req, res) => {
             return APIResponse.errorResponse(res, "Invalid interval parameter");
         }
 
-        console.log("getTotalSalesOverTime - Group By Interval:", groupByInterval);
+       // console.log("getTotalSalesOverTime - Group By Interval:", groupByInterval);
 
         const salesData = await ShopifyOrder.aggregate([
-            // Convert the created_at field to a Date object
+          
             {
                 $addFields: {
                     created_at: {
@@ -35,20 +35,21 @@ const getTotalSalesOverTime = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        console.log("getTotalSalesOverTime - Sales Data:", salesData);
+        // console.log("getTotalSalesOverTime - Sales Data:", salesData);
 
         return APIResponse.successResponse(res, "Total Sales Over Time", salesData);
     } catch (error) {
         console.error("getTotalSalesOverTime - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch total sales data");
     }
-}; //complated
+}; 
+
 
 
 
 const getSalesGrowthRateOverTime = async (req, res) => {
     try {
-        console.log("getSalesGrowthRateOverTime - Request Query:", req.query);
+       // console.log("getSalesGrowthRateOverTime - Request Query:", req.query);
 
         const { interval } = req.query;
         const trimmedInterval = (interval || '').trim(); 
@@ -64,7 +65,7 @@ const getSalesGrowthRateOverTime = async (req, res) => {
             return APIResponse.errorResponse(res, "Invalid interval parameter");
         }
 
-        console.log("getSalesGrowthRateOverTime - Group By Interval:", groupByInterval);
+        //console.log("getSalesGrowthRateOverTime - Group By Interval:", groupByInterval);
 
         const salesData = await ShopifyOrder.aggregate([
             {
@@ -81,7 +82,7 @@ const getSalesGrowthRateOverTime = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        console.log("getSalesGrowthRateOverTime - Aggregation Pipeline Results:", salesData);
+        //console.log("getSalesGrowthRateOverTime - Aggregation Pipeline Results:", salesData);
 
         if (salesData.length === 0) {
             return APIResponse.successResponse(res, "No data available for the selected interval", []);
@@ -110,7 +111,7 @@ const getSalesGrowthRateOverTime = async (req, res) => {
             }
         }
 
-        console.log("getSalesGrowthRateOverTime - Growth Rate Data:", growthRateData);
+        //console.log("getSalesGrowthRateOverTime - Growth Rate Data:", growthRateData);
 
         return APIResponse.successResponse(res, "Sales Growth Rate Over Time", growthRateData);
     } catch (error) {
@@ -122,7 +123,7 @@ const getSalesGrowthRateOverTime = async (req, res) => {
 
 const getNewCustomersOverTime = async (req, res) => {
     try {
-        console.log("getNewCustomersOverTime - Request Query:", req.query);
+        //console.log("getNewCustomersOverTime - Request Query:", req.query);
 
         const { interval } = req.query;
         const groupByInterval = {
@@ -136,7 +137,7 @@ const getNewCustomersOverTime = async (req, res) => {
             return APIResponse.errorResponse(res, "Invalid interval parameter");
         }
 
-        console.log("getNewCustomersOverTime - Group By Interval:", groupByInterval);
+        //console.log("getNewCustomersOverTime - Group By Interval:", groupByInterval);
 
         const newCustomersData = await ShopifyCustomer.aggregate([
             {
@@ -153,7 +154,7 @@ const getNewCustomersOverTime = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
 
-        console.log("getNewCustomersOverTime - New Customers Data:", newCustomersData);
+        //console.log("getNewCustomersOverTime - New Customers Data:", newCustomersData);
 
         return APIResponse.successResponse(res, "New Customers Over Time", newCustomersData);
     } catch (error) {
@@ -165,7 +166,7 @@ const getNewCustomersOverTime = async (req, res) => {
 
 const getRepeatCustomers = async (req, res) => {
     try {
-        console.log("getRepeatCustomers - Starting...");
+        //console.log("getRepeatCustomers - Starting...");
 
         const repeatCustomersData = await ShopifyOrder.aggregate([
             { 
@@ -182,7 +183,7 @@ const getRepeatCustomers = async (req, res) => {
             }
         ]);
 
-        console.log("getRepeatCustomers - Repeat Customers Data:", repeatCustomersData);
+        //console.log("getRepeatCustomers - Repeat Customers Data:", repeatCustomersData);
 
         if (repeatCustomersData.length === 0) {
             return APIResponse.successResponse(res, "No repeat customers found", { repeatCustomers: 0 });
@@ -200,14 +201,14 @@ const getRepeatCustomers = async (req, res) => {
 
 const getGeographicalDistribution = async (req, res) => {
     try {
-        console.log("getGeographicalDistribution - Starting...");
+        //console.log("getGeographicalDistribution - Starting...");
 
         const geoData = await ShopifyCustomer.aggregate([
             { $group: { _id: "$default_address.city", count: { $sum: 1 } } },
             { $sort: { count: -1 } }
         ]);
 
-        console.log("getGeographicalDistribution - Geographical Data:", geoData);
+        //console.log("getGeographicalDistribution - Geographical Data:", geoData);
 
         return APIResponse.successResponse(res, "Geographical Distribution of Customers", geoData);
     } catch (error) {
@@ -218,16 +219,16 @@ const getGeographicalDistribution = async (req, res) => {
 
 const getCustomerLifetimeValueByCohorts = async (req, res) => {
     try {
-        console.log("getCustomerLifetimeValueByCohorts - Starting...");
+        //console.log("getCustomerLifetimeValueByCohorts - Starting...");
 
         const cohortData = await ShopifyOrder.aggregate([
-            // Convert 'created_at' to a Date object
+           
             {
                 $addFields: {
                     created_at: { $toDate: "$created_at" }
                 }
             },
-            // Group by customer ID to get the first purchase month and total value
+           
             {
                 $group: {
                     _id: "$customer.id",
@@ -235,7 +236,7 @@ const getCustomerLifetimeValueByCohorts = async (req, res) => {
                     totalValue: { $sum: { $toDouble: "$total_price_set.shop_money.amount" } }
                 }
             },
-            // Group by the first purchase month to aggregate total value and count customers
+            
             {
                 $group: {
                     _id: "$firstPurchaseMonth",
@@ -243,10 +244,10 @@ const getCustomerLifetimeValueByCohorts = async (req, res) => {
                     customerCount: { $sum: 1 }
                 }
             },
-            { $sort: { _id: 1 } } // Sort by the cohort month
+            { $sort: { _id: 1 } } 
         ]);
 
-        console.log("getCustomerLifetimeValueByCohorts - Cohort Data:", cohortData);
+       // console.log("getCustomerLifetimeValueByCohorts - Cohort Data:", cohortData);
 
         return APIResponse.successResponse(res, "Customer Lifetime Value by Cohorts", cohortData);
     } catch (error) {
