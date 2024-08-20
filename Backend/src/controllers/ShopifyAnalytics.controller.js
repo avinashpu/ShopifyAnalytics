@@ -200,7 +200,7 @@ const getRepeatCustomers = async (req, res) => {
             },
             {
                 $group: {
-                    _id: "$_id.interval", // Group by interval to include it in the result
+                    _id: "$_id.interval", 
                     repeatCustomers: { $sum: 1 }
                 }
             }
@@ -213,7 +213,7 @@ const getRepeatCustomers = async (req, res) => {
         const result = repeatCustomersData.map(item => ({
             _id: item._id,
             repeatCustomers: item.repeatCustomers
-        }))[0]; // Assuming you want a single result
+        }))[0]; 
 
         return APIResponse.successResponse(res, "Repeat Customers Count", result);
     } catch (error) {
