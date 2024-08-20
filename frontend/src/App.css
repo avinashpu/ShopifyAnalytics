@@ -2,33 +2,79 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background-color: #060606;
 }
 
-.container {
+/*header*/
+.header {
+  position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+   
+    z-index: 1000; 
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0 20px;
 }
 
-h1 {
+.header-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: aqua;
+}
+
+
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px 0;
   text-align: center;
-  margin-bottom: 20px;
 }
 
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 .controls {
-  margin-bottom: 20px;
   text-align: center;
+  font-size: 24px; 
+  
 }
 
 .controls label {
-  margin-right: 10px;
+  margin-right: 40px;
 }
+.font {
+  font-size: 18px; 
+}
+
+
+/*charts*/
+
+.main-content {
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 40px;
+}
+
+
+
 
 .charts {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 50px;
   justify-content: center;
 }
 

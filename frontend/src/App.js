@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import SalesOverTimeChart from './components/SalesOverTimeChart';
 import SalesGrowthRateChart from './components/SalesGrowthRateChart';
 import NewCustomersChart from './components/NewCustomersChart';
@@ -6,36 +8,24 @@ import RepeatCustomersChart from './components/RepeatCustomersChart';
 import GeographicalDistributionChart from './components/GeographicalDistributionChart';
 import CustomerLifetimeValueChart from './components/CustomerLifetimeValueChart';
 
-
 const App = () => {
     const [interval, setInterval] = useState('monthly');
 
     return (
-        <div className="container">
-            <h1>Shopify Analytics Dashboard</h1>
-            <div className="controls">
-                <label htmlFor="interval">Select Interval: </label>
-                <select
-                    id="interval"
-                    value={interval}
-                    onChange={(e) => setInterval(e.target.value)}
-                >
-                    <option value="daily">Daily</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
-            </div>
-            <div className="charts">
-                <SalesOverTimeChart interval={interval} />
-                <SalesGrowthRateChart interval={interval} />
-                <NewCustomersChart interval={interval} />
-                <RepeatCustomersChart />
-                <GeographicalDistributionChart />
-                <CustomerLifetimeValueChart />
-            </div>
+        <div className="app-container">
+            <Header interval={interval} setInterval={setInterval} />
+            <main className="main-content">
+                <div className="charts">
+                    <SalesOverTimeChart interval={interval} />
+                    <SalesGrowthRateChart interval={interval} />
+                    <NewCustomersChart interval={interval} />
+                    <RepeatCustomersChart interval={interval} />
+                    <GeographicalDistributionChart />
+                    <CustomerLifetimeValueChart />
+                </div>
+            </main>
+            <Footer />
         </div>
     );
 };
-
 export default App;

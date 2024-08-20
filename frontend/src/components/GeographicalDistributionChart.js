@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
-import { getGeographicalDistribution } from '../services/apiService';
+import { getGeographicalDistribution } from '../services/apiService'; 
 
 const GeographicalDistributionChart = () => {
     const [chartData, setChartData] = useState({
@@ -13,8 +13,8 @@ const GeographicalDistributionChart = () => {
             try {
                 const response = await getGeographicalDistribution();
 
-                if (response && response.data && Array.isArray(response?.data)) {
-                    const data = response?.data;
+                if (response && response.data) {
+                    const data = response.data;
 
                     const labels = data.map(item => item._id);
                     const counts = data.map(item => item.count);
@@ -44,26 +44,26 @@ const GeographicalDistributionChart = () => {
                             }
                         ]
                     });
-                } else {
-                    console.error("Expected an array but got:", response ? response.data : undefined);
-                    setChartData({
-                        labels: [],
-                        datasets: []
-                    });
                 }
             } catch (error) {
                 console.error("Error fetching geographical distribution data:", error);
-                setChartData({
-                    labels: [],
-                    datasets: []
-                });
             }
         };
 
         fetchData();
     }, []);
 
-    return <Pie data={chartData} options={{ responsive: true }} />;
+    return (
+        <div style={{ position: 'relative', height: '400px', width: '400px' }}>
+            <Pie
+                data={chartData}
+                options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }}
+            />
+        </div>
+    );
 };
 
 export default GeographicalDistributionChart;
