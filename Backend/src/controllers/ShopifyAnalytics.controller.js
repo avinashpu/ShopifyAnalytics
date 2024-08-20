@@ -164,26 +164,47 @@ const getNewCustomersOverTime = async (req, res) => {
 };//completed
 
 
+
 const getRepeatCustomers = async (req, res) => {
     try {
-        //console.log("getRepeatCustomers - Starting...");
+        const { interval } = req.query;
+
+        const groupByInterval = {
+            daily: { $dateToString: { format: "%Y-%m-%d", date: "$created_at" } },
+            monthly: { $dateToString: { format: "%Y-%m", date: "$created_at" } },
+            quarterly: { $concat: [{ $dateToString: { format: "%Y-", date: "$created_at" } }, { $ceil: { $divide: [{ $month: "$created_at" }, 3] } }] },
+            yearly: { $dateToString: { format: "%Y", date: "$created_at" } }
+        }[interval || 'monthly'];
+
+        if (!groupByInterval) {
+            return APIResponse.errorResponse(res, "Invalid interval parameter");
+        }
 
         const repeatCustomersData = await ShopifyOrder.aggregate([
-            { 
+            {
+                $addFields: {
+                    created_at: { $toDate: "$created_at" }
+                }
+            },
+            {
                 $group: {
-                    _id: "$customer.id",    
+                    _id: {
+                        customerId: "$customer.id",
+                        interval: groupByInterval
+                    },    
                     orderCount: { $sum: 1 }
                 }
             },
             { 
                 $match: { orderCount: { $gt: 1 } } 
             },
-            { 
-                $count: "repeatCustomers" 
+            {
+                $group: {
+                    _id: null,
+                    repeatCustomers: { $sum: 1 }
+                }
             }
         ]);
-
-        //console.log("getRepeatCustomers - Repeat Customers Data:", repeatCustomersData);
 
         if (repeatCustomersData.length === 0) {
             return APIResponse.successResponse(res, "No repeat customers found", { repeatCustomers: 0 });
@@ -196,7 +217,9 @@ const getRepeatCustomers = async (req, res) => {
         console.error("getRepeatCustomers - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch repeat customers data");
     }
-}; //completed
+};
+
+ //completed
 
 
 const getGeographicalDistribution = async (req, res) => {
