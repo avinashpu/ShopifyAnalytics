@@ -200,7 +200,7 @@ const getRepeatCustomers = async (req, res) => {
             },
             {
                 $group: {
-                    _id: null,
+                    _id: "$_id.interval", // Group by interval to include it in the result
                     repeatCustomers: { $sum: 1 }
                 }
             }
@@ -210,14 +210,18 @@ const getRepeatCustomers = async (req, res) => {
             return APIResponse.successResponse(res, "No repeat customers found", { repeatCustomers: 0 });
         }
 
-        const count = repeatCustomersData[0].repeatCustomers;
+        const result = repeatCustomersData.map(item => ({
+            _id: item._id,
+            repeatCustomers: item.repeatCustomers
+        }))[0]; // Assuming you want a single result
 
-        return APIResponse.successResponse(res, "Repeat Customers Count", { repeatCustomers: count });
+        return APIResponse.successResponse(res, "Repeat Customers Count", result);
     } catch (error) {
         console.error("getRepeatCustomers - Error:", error);
         return APIResponse.errorResponse(res, "Failed to fetch repeat customers data");
     }
 };
+
 
  //completed
 
